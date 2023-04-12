@@ -13,7 +13,18 @@ export default function Home() {
         <meta name='description' content='Lista de produtos' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
-      <main></main>
+      <header>
+        <h1>Produtos</h1>
+        <p>
+          Produtos cadastrados: <span>0</span>
+        </p>
+      </header>
+      <main>
+        <div>
+          <p>:( Ainda não existem produtos cadastrados.</p>
+          <button>Adicionar novo produto</button>
+        </div>
+      </main>
     </>
   );
 }
