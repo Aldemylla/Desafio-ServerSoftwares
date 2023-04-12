@@ -59,8 +59,8 @@ export default function Home({ data }: HomeProps) {
 }
 
 export async function getServerSideProps() {
-  const res = await fetch(`${process.env.API_URL}/products`);
-  const data = await res.json();
+  const response = await fetch(`${process.env.BASE_URL}/products`);
+  const data = await response.json();
 
   return { props: { data } };
 }
