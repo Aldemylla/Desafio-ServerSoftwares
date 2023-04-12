@@ -6,12 +6,14 @@ interface ProductsContextProps {
   products: Array<Product> | [];
   setProducts: Dispatch<SetStateAction<Array<Product>>>;
   addProduct: (product: Product) => void;
+  deleteProduct: (product: Product) => void;
 }
 
 const ProductsContext = createContext<ProductsContextProps>({
   products: [],
   setProducts: () => [],
   addProduct: () => [],
+  deleteProduct: () => [],
 });
 
 export function useProductsContext() {
@@ -27,8 +29,16 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
     }
   }
 
+  function deleteProduct(product: Product) {
+    if (product) {
+      setProducts((oldProducts) =>
+        oldProducts.filter((filteredProduct) => filteredProduct._id !== product._id)
+      );
+    }
+  }
+
   return (
-    <ProductsContext.Provider value={{ products, setProducts, addProduct }}>
+    <ProductsContext.Provider value={{ products, setProducts, addProduct, deleteProduct }}>
       {children}
     </ProductsContext.Provider>
   );

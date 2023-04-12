@@ -45,9 +45,9 @@ export default function Home({ data }: HomeProps) {
       <main>
         {products?.length !== 0 ? (
           <ul>
-            {products.map(({ codigo, descricao }) => (
-              <li key={codigo}>
-                <ProductCard codigo={codigo} descricao={descricao} />
+            {products.map((product) => (
+              <li key={product._id}>
+                <ProductCard {...product} />
               </li>
             ))}
           </ul>
