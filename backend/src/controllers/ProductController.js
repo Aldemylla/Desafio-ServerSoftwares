@@ -47,7 +47,7 @@ module.exports = {
   async delete(request, response) {
     try {
       await Product.findByIdAndDelete(request.params.id);
-      return response.status(204).send({ message: "Produto deletado com sucesso!" });
+      return response.status(204).send();
     } catch (err) {
       return response.status(400).json({ error: "Erro ao deletar o produto." });
     }
