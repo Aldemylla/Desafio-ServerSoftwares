@@ -1,11 +1,30 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import { useState } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+import { ProductModal } from "@/components/ProductModal";
+import { ProductCard } from "@/components/ProductCard";
 
-export default function Home() {
+interface HomeProps {
+  data: {
+    products: Array<Product>;
+  };
+}
+
+interface Product {
+  codigo: string;
+  descricao: string;
+  preco: number;
+  data_cadastro: Date;
+}
+
+export default function Home({ data }: HomeProps) {
+  const { products } = data;
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function handleModal() {
+    setModalOpen((prev) => !prev);
+  }
+
   return (
     <>
       <Head>
@@ -13,19 +32,36 @@ export default function Home() {
         <meta name='description' content='Lista de produtos' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
+
       <header>
         <h1>Produtos</h1>
         <p>
-          Produtos cadastrados: <span>0</span>
+          Produtos cadastrados: <span>{products.length}</span>
         </p>
       </header>
       <main>
-        <div>
+        {products?.length !== 0 ? (
+          <ul>
+            {products.map(({ codigo, descricao }) => (
+              <li key={codigo}>
+                <ProductCard codigo={codigo} descricao={descricao} />
+              </li>
+            ))}
+          </ul>
+        ) : (
           <p>:( Ainda não existem produtos cadastrados.</p>
-          <button>Adicionar novo produto</button>
-        </div>
+        )}
+        <button onClick={handleModal}>Cadastrar novo produto</button>
       </main>
+      <ProductModal open={modalOpen} />
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const res = await fetch(`${process.env.API_URL}/products`);
+  const data = await res.json();
+
+  return { props: { data } };
 }
 

@@ -7,7 +7,7 @@ type ProductCardProps = {
 
 export function ProductCard({ codigo, descricao }: ProductCardProps) {
   return (
-    <article>
+    <div>
       <h2>Código: {codigo}</h2>
       <p>Descrição: {descricao}</p>
       <div role='group' aria-label='Ações'>
@@ -21,6 +21,6 @@ export function ProductCard({ codigo, descricao }: ProductCardProps) {
           Detalhes
         </button>
       </div>
-    </article>
+    </div>
   );
 }

@@ -1,0 +1,16 @@
+# dependencies
+/frontend/node_modules
+/backend/node_modules
+
+# next.js
+/frontend/.next/
+
+# production
+/frontend/build
+
+# local env files
+/frontend/.env
+/backend/.env
+
+# typescript
+/frontend/next-env.d.ts

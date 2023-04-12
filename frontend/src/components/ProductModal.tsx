@@ -1,5 +1,9 @@
-export function ProductModal() {
-  return (
+interface ProductModalProps {
+  open: boolean;
+}
+
+export function ProductModal({ open }: ProductModalProps) {
+  return open ? (
     <div role='dialog' aria-labelledby='modal-title' aria-modal='true'>
       <header>
         <h2 id='modal-title'>Cadastrar produto</h2>
@@ -19,5 +23,5 @@ export function ProductModal() {
         <button type='submit'>Cadastrar</button>
       </form>
     </div>
-  );
+  ) : null;
 }
