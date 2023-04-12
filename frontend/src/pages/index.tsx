@@ -23,9 +23,14 @@ export default function Home({ data }: HomeProps) {
   }, []);
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [detailedProduct, setDetailedProduct] = useState("");
 
   function handleModal() {
     setModalOpen((prev) => !prev);
+  }
+
+  function handleProductDetail(id: string) {
+    setDetailedProduct(id);
   }
 
   return (
@@ -47,7 +52,11 @@ export default function Home({ data }: HomeProps) {
           <ul>
             {products.map((product) => (
               <li key={product._id}>
-                <ProductCard {...product} />
+                <ProductCard
+                  onClick={() => handleProductDetail(product._id)}
+                  product={product}
+                  detailed={product._id === detailedProduct}
+                />
               </li>
             ))}
           </ul>
