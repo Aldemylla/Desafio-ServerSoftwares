@@ -2,12 +2,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductFormProps, productFormSchema } from "./productFormSchema";
 import { Input } from "./Input";
+import { useProductsContext } from "@/contexts/ProductsContext";
 
 interface ProductModalProps {
   open: boolean;
 }
 
 export function ProductModal({ open }: ProductModalProps) {
+  const { addProduct } = useProductsContext();
   const {
     control,
     register,
@@ -24,8 +26,6 @@ export function ProductModal({ open }: ProductModalProps) {
   });
 
   const handleForm = async (data: ProductFormProps) => {
-    console.log(data);
-
     const response = await fetch(`${process.env.BASE_URL}/products`, {
       method: "POST",
       body: JSON.stringify(data),
@@ -33,6 +33,10 @@ export function ProductModal({ open }: ProductModalProps) {
         "Content-Type": "application/json",
       },
     });
+
+    if (response.status === 201) {
+      addProduct(data);
+    }
   };
 
   return open ? (

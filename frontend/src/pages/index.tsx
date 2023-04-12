@@ -1,8 +1,10 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ProductModal } from "@/components/ProductModal";
 import { ProductCard } from "@/components/ProductCard";
+import { useProductsContext } from "@/contexts/ProductsContext";
+import { Product } from "@/types/Product";
 
 interface HomeProps {
   data: {
@@ -10,15 +12,16 @@ interface HomeProps {
   };
 }
 
-interface Product {
-  codigo: string;
-  descricao: string;
-  preco: number;
-  data_cadastro: Date;
-}
-
 export default function Home({ data }: HomeProps) {
-  const { products } = data;
+  const { products: contextProducts, setProducts } = useProductsContext();
+  const products: Array<Product> | [] = contextProducts || data.products;
+
+  useEffect(() => {
+    if (contextProducts.length === 0) {
+      setProducts(data.products);
+    }
+  }, []);
+
   const [modalOpen, setModalOpen] = useState(false);
 
   function handleModal() {
