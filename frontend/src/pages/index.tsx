@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { ProductModal } from "@/components/ProductModal";
 import { ProductCard } from "@/components/ProductCard";
+import { Button } from "@/components/Button";
 import { useProductsContext } from "@/contexts/ProductsContext";
 import { Product } from "@/types/Product";
 
@@ -74,7 +75,7 @@ export default function Home({ data }: HomeProps) {
               <span role='separator'>:(</span> Ainda não existem produtos cadastrados
             </p>
           )}
-          <button onClick={openProductFormModal}>Cadastrar novo produto</button>
+          <Button onClick={openProductFormModal}>Cadastrar novo produto</Button>
         </main>
         <ProductModal />
       </div>

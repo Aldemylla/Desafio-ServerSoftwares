@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { Button } from "../Button";
 import { ProductFormProps, productFormSchema } from "./productFormSchema";
 import { Input } from "./Input";
 import { useProductsContext } from "@/contexts/ProductsContext";
@@ -17,6 +18,7 @@ export function ProductModal() {
     setProductToUpdate,
     productFormModalOpened,
     setProductFormModalOpened,
+    loading,
   } = useProductsContext();
   const productAction = !!productToUpdate ? "Editar" : "Cadastrar";
   const {
@@ -44,15 +46,18 @@ export function ProductModal() {
 
   function closeModal() {
     setProductToUpdate(null);
-    setProductFormModalOpened(false);
+
+    if (!loading) {
+      setProductFormModalOpened(false);
+    }
   }
 
   const handleForm = async (product: ProductFormProps) => {
     if (productAction === "Cadastrar") {
-      addProduct(product);
+      await addProduct(product);
       closeModal();
     } else if (productAction === "Editar") {
-      updateProduct(product);
+      await updateProduct(product);
       closeModal();
     }
   };
@@ -94,9 +99,7 @@ export function ProductModal() {
             control={control}
           />
           {productToUpdate && <p>Data de cadastro: {String(productToUpdate.data_cadastro)}</p>}
-          <button className={styles.submit_button} type='submit'>
-            {productAction}
-          </button>
+          <Button type='submit'>{productAction}</Button>
         </form>
       </div>
     </div>
