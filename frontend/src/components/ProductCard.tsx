@@ -1,10 +1,10 @@
 import { MouseEventHandler, MouseEvent } from "react";
+import Image from "next/image";
 
 import { useProductsContext } from "@/contexts/ProductsContext";
-import { Product } from "@/types/Product";
+import styles from "@/styles/ProductCard.module.scss";
 
-import styles from "@/styles/product_card.module.scss";
-import Image from "next/image";
+import { Product } from "@/types/Product";
 
 interface ProductCardProps {
   product: Product;

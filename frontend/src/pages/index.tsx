@@ -7,7 +7,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useProductsContext } from "@/contexts/ProductsContext";
 import { Product } from "@/types/Product";
 
-import styles from "@/styles/home.module.scss";
+import styles from "@/styles/Home.module.scss";
 
 interface HomeProps {
   data: {
@@ -74,9 +74,7 @@ export default function Home({ data }: HomeProps) {
               <span role='separator'>:(</span> Ainda não existem produtos cadastrados
             </p>
           )}
-          <button className={styles.add_product_button} onClick={openProductFormModal}>
-            Cadastrar novo produto
-          </button>
+          <button onClick={openProductFormModal}>Cadastrar novo produto</button>
         </main>
         <ProductModal />
       </div>

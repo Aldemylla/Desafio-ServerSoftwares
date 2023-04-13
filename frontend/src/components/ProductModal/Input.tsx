@@ -1,23 +1,28 @@
 import { UseFormRegister, Control } from "react-hook-form";
 import { CurrencyMaskedInput } from "./CurrencyMaskedInput";
 
+import styles from "@/styles/Input.module.scss";
+
 interface InputProps {
+  label: string;
   inputName: string;
   error?: string;
   control?: Control<any>;
   register: UseFormRegister<any>;
 }
 
-export function Input({ inputName, error, register, control }: InputProps) {
+export function Input({ label, inputName, error, register, control }: InputProps) {
   return (
-    <>
-      <label htmlFor={inputName}>{inputName}:</label>
+    <div className={styles.container}>
+      <label className={styles.label} htmlFor={inputName}>
+        {label}:
+      </label>
       {inputName === "preco" ? (
-        <CurrencyMaskedInput control={control} />
+        <CurrencyMaskedInput className={styles.input} control={control} />
       ) : (
-        <input type='text' id={inputName} {...register(inputName)} />
+        <input className={styles.input} type='text' id={inputName} {...register(inputName)} />
       )}
-      {error && <p>{error}</p>}
-    </>
+      <p className={styles.error}>{error}</p>
+    </div>
   );
 }

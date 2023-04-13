@@ -1,0 +1,32 @@
+.container {
+  display: grid;
+  align-items: center;
+  gap: 0.2rem;
+
+  width: 100%;
+
+  .label {
+    color: $gray-300;
+  }
+
+  .input {
+    outline-color: $purple;
+    border: 1px solid $gray-300;
+    border-radius: 4px;
+
+    background: $white;
+
+    padding: 1rem;
+
+    width: 100%;
+  }
+
+  .error {
+    color: $danger;
+    font-size: $font-small;
+
+    min-height: $font-small;
+
+    word-break: break-all;
+  }
+}
