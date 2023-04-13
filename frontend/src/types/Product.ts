@@ -2,7 +2,7 @@ export interface Product {
   _id: string;
   codigo: string;
   descricao: string;
-  preco: number;
+  preco: string;
   data_cadastro?: Date;
 }
 

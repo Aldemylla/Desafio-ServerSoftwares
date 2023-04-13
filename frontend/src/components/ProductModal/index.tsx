@@ -42,7 +42,7 @@ export function ProductModal() {
       reset({
         codigo: "",
         descricao: "",
-        preco: 0,
+        preco: "",
       });
     }
   }, [productToUpdate, productFormModalOpened]);

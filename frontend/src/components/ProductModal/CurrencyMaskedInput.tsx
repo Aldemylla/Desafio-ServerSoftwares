@@ -1,9 +1,14 @@
 import MaskedInput from "react-text-mask";
-import { Controller } from "react-hook-form";
+import { Controller, Control } from "react-hook-form";
 import { createNumberMask } from "text-mask-addons";
 import { productFormSchema } from "./productFormSchema";
+import { InputHTMLAttributes } from "react";
 
-export function CurrencyMaskedInput(props: any) {
+interface CurrencyMaskedInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  control: Control<any>;
+}
+
+export function CurrencyMaskedInput({ control, ...props }: CurrencyMaskedInputProps) {
   const currencyMask = createNumberMask({
     prefix: "R$ ",
     includeThousandsSeparator: true,
@@ -19,13 +24,13 @@ export function CurrencyMaskedInput(props: any) {
   return (
     <Controller
       name='preco'
-      control={props.control}
+      control={control}
       rules={{ validate: (value) => productFormSchema.safeParse(value).success }}
       render={({ field: { onChange, onBlur, value } }) => (
         <MaskedInput
           mask={currencyMask}
           value={value}
-          onChange={(event) => onChange(+event.target.value.replace(/[^\d]/g, ""))}
+          onChange={(event) => onChange(event.target.value)}
           onBlur={onBlur}
           placeholder='R$ 0,00'
           {...props}

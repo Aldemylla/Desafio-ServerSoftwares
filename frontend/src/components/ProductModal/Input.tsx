@@ -12,12 +12,18 @@ interface InputProps {
 }
 
 export function Input({ label, inputName, error, register, control }: InputProps) {
+  if (inputName === "preco" && !control) {
+    throw new Error(
+      "A propriedade control se torna obrigatória quando inputName é igual a 'preco'."
+    );
+  }
+
   return (
     <div className={styles.container}>
       <label className={styles.label} htmlFor={inputName}>
         {label}:
       </label>
-      {inputName === "preco" ? (
+      {inputName === "preco" && control ? (
         <CurrencyMaskedInput className={styles.input} control={control} />
       ) : (
         <input className={styles.input} type='text' id={inputName} {...register(inputName)} />
