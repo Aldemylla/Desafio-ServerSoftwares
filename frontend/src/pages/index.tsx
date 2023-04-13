@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
 
 import { ProductModal } from "@/components/ProductModal";
@@ -6,11 +7,15 @@ import { ProductCard } from "@/components/ProductCard";
 import { useProductsContext } from "@/contexts/ProductsContext";
 import { Product } from "@/types/Product";
 
+import styles from "@/styles/home.module.scss";
+
 interface HomeProps {
   data: {
     products: Array<Product>;
   };
 }
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home({ data }: HomeProps) {
   const {
@@ -20,14 +25,13 @@ export default function Home({ data }: HomeProps) {
     setProductFormModalOpened,
   } = useProductsContext();
   const products: Array<Product> | [] = contextProducts || data.products;
+  const [detailedProduct, setDetailedProduct] = useState("");
 
   useEffect(() => {
     if (contextProducts.length === 0) {
       setProducts(data.products);
     }
   }, []);
-
-  const [detailedProduct, setDetailedProduct] = useState("");
 
   function openProductFormModal() {
     setProductToUpdate(null);
@@ -46,31 +50,36 @@ export default function Home({ data }: HomeProps) {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
 
-      <header>
-        <h1>Produtos</h1>
-        <p>
-          Produtos cadastrados: <span>{products.length}</span>
-        </p>
-      </header>
-      <main>
-        {products?.length !== 0 ? (
-          <ul>
-            {products.map((product) => (
-              <li key={product._id}>
-                <ProductCard
-                  onClick={() => handleProductDetail(product._id)}
-                  product={product}
-                  detailed={product._id === detailedProduct}
-                />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>:( Ainda não existem produtos cadastrados.</p>
-        )}
-        <button onClick={openProductFormModal}>Cadastrar novo produto</button>
-      </main>
-      <ProductModal />
+      <div className={`${styles.parent_container} ${inter.className}`}>
+        <header className={`${styles.header}`}>
+          <p className={styles.registered_products}>
+            Produtos cadastrados <span className={styles.products_length}>{products.length}</span>
+          </p>
+        </header>
+        <main className={`${styles.main}`}>
+          {products?.length !== 0 ? (
+            <ul className={styles.product_list}>
+              {products.map((product) => (
+                <li key={product._id}>
+                  <ProductCard
+                    onClick={() => handleProductDetail(product._id)}
+                    product={product}
+                    detailed={product._id === detailedProduct}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.no_products_text}>
+              <span role='separator'>:(</span> Ainda não existem produtos cadastrados
+            </p>
+          )}
+          <button className={styles.add_product_button} onClick={openProductFormModal}>
+            Cadastrar novo produto
+          </button>
+        </main>
+        <ProductModal />
+      </div>
     </>
   );
 }
