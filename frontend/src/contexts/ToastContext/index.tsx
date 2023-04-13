@@ -31,7 +31,17 @@ export const ToastContextProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (error) {
-      console.error(error);
+      toast(error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        type: "error",
+      });
     }
   }, [error]);
 
