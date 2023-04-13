@@ -6,7 +6,9 @@ module.exports = {
       const products = await Product.find({});
       return response.status(200).json({ products });
     } catch (error) {
-      response.status(500).json({ message: "Erro ao recuperar os produtos." });
+      response
+        .status(500)
+        .json({ message: "Erro ao recuperar os produtos.", error: error.message });
     }
   },
 
@@ -15,6 +17,12 @@ module.exports = {
 
     if (!codigo || !descricao || !preco) {
       return response.status(400).json({ message: "Estão faltando campos obrigatórios." });
+    }
+
+    const existingProduct = await Product.findOne({ codigo });
+
+    if (existingProduct) {
+      return response.status(400).json({ message: "Já existe um produto com esse código." });
     }
 
     const product = new Product({ codigo, descricao, preco });
@@ -39,8 +47,10 @@ module.exports = {
       }
 
       return response.status(200).json(productUpdated);
-    } catch (err) {
-      return response.status(400).json({ error: "Erro ao atualizar produto." });
+    } catch (error) {
+      return response
+        .status(400)
+        .json({ message: "Erro ao atualizar produto.", error: error.message });
     }
   },
 
@@ -48,8 +58,10 @@ module.exports = {
     try {
       await Product.findByIdAndDelete(request.params.id);
       return response.status(204).send();
-    } catch (err) {
-      return response.status(400).json({ error: "Erro ao deletar o produto." });
+    } catch (error) {
+      return response
+        .status(400)
+        .json({ message: "Erro ao deletar o produto.", error: error.message });
     }
   },
 };
