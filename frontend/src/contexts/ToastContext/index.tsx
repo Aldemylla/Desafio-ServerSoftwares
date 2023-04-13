@@ -10,7 +10,7 @@ export function useToastContext() {
 }
 
 export const ToastContextProvider = ({ children }: { children: ReactNode }) => {
-  const { loading, error } = useProductsContext();
+  const { loading, success, error } = useProductsContext();
 
   const toastId = useRef<null | Id>(null);
   const [timerToToast, setTimerToToast] = useState<NodeJS.Timeout | null>(null);
@@ -44,6 +44,22 @@ export const ToastContextProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      toast(success, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        type: "success",
+      });
+    }
+  }, [success]);
 
   return <ToastContext.Provider value={{}}>{children}</ToastContext.Provider>;
 };

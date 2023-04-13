@@ -14,6 +14,7 @@ interface ProductsContextProps {
   setProductFormModalOpened: Dispatch<SetStateAction<boolean>>;
   loading: boolean;
   error: string;
+  success: string;
 }
 
 const ProductsContext = createContext<ProductsContextProps>({
@@ -28,6 +29,7 @@ const ProductsContext = createContext<ProductsContextProps>({
   setProductFormModalOpened: () => null,
   loading: false,
   error: "",
+  success: "",
 });
 
 export function useProductsContext() {
@@ -41,12 +43,21 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  function clearFetchStatus() {
+    if (error) {
+      setError("");
+    }
+
+    if (success) {
+      setSuccess("");
+    }
+  }
 
   async function addProduct(product: ProductToSendDB) {
     if (product) {
-      if (error) {
-        setError("");
-      }
+      clearFetchStatus();
 
       setLoading(true);
       try {
@@ -62,6 +73,7 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
 
         if (response.ok) {
           setProducts((oldProducts) => [...oldProducts, responseJSON]);
+          setSuccess("Produto cadastrado!");
         } else {
           setError(responseJSON.message);
         }
@@ -74,9 +86,7 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
 
   async function updateProduct(product: ProductToSendDB) {
     if (productToUpdate && product) {
-      if (error) {
-        setError("");
-      }
+      clearFetchStatus();
 
       setLoading(true);
 
@@ -98,6 +108,7 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
         newProducts[productToUpdateIndex] = responseJSON;
 
         setProducts(newProducts);
+        setSuccess("Produto atualizado!");
       } else {
         setError(responseJSON.message);
       }
@@ -108,22 +119,20 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
 
   async function deleteProduct(product: Product) {
     if (product) {
-      if (error) {
-        setError("");
-      }
+      clearFetchStatus();
 
       setLoading(true);
       const response = await fetch(`${process.env.BASE_URL}/products/${product._id}`, {
         method: "DELETE",
       });
 
-      const responseJSON = await response.json();
-
       if (response.status === 204) {
         setProducts((oldProducts) =>
           oldProducts.filter((filteredProduct) => filteredProduct._id !== product._id)
         );
+        setSuccess("Produto deletado!");
       } else {
+        const responseJSON = await response.json();
         setError(responseJSON.message);
       }
     }
@@ -145,6 +154,7 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
         setProductFormModalOpened,
         loading,
         error,
+        success,
       }}>
       {children}
     </ProductsContext.Provider>
