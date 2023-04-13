@@ -73,7 +73,6 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
         newProducts[productToUpdateIndex] = responseProduct;
 
         setProducts(newProducts);
-        setProductToUpdate(null);
         console.log("Produto atualizado com sucesso!"); // TODO: Implement the rendered message
       }
     }

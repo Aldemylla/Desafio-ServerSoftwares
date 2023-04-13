@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -11,6 +11,7 @@ export function ProductModal() {
     addProduct,
     updateProduct,
     productToUpdate,
+    setProductToUpdate,
     productFormModalOpened,
     setProductFormModalOpened,
   } = useProductsContext();
@@ -36,19 +37,22 @@ export function ProductModal() {
         preco: 0,
       });
     }
-  }, [productToUpdate]);
+  }, [productToUpdate, productFormModalOpened]);
+
+  function closeModal() {
+    setProductToUpdate(null);
+    setProductFormModalOpened(false);
+  }
 
   const handleForm = async (product: ProductFormProps) => {
     if (productAction === "Cadastrar") {
       addProduct(product);
+      closeModal();
     } else if (productAction === "Editar") {
       updateProduct(product);
+      closeModal();
     }
   };
-
-  function closeModal() {
-    setProductFormModalOpened(false);
-  }
 
   return productFormModalOpened ? (
     <div role='dialog' aria-labelledby='modal-title' aria-modal='true'>
