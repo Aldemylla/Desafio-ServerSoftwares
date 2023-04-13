@@ -1,29 +1,41 @@
-import { createContext, useContext, useState, Dispatch, SetStateAction, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  Dispatch,
+  SetStateAction,
+  ReactNode,
+  useEffect,
+} from "react";
 
 import { Product, ProductToSendDB } from "@/types/Product";
 
 interface ProductsContextProps {
   products: Array<Product> | [];
   setProducts: Dispatch<SetStateAction<Array<Product>>>;
-  addProduct: (product: ProductToSendDB) => void;
-  updateProduct: (product: ProductToSendDB) => void;
-  deleteProduct: (product: Product) => void;
+  addProduct: (product: ProductToSendDB) => Promise<void>;
+  updateProduct: (product: ProductToSendDB) => Promise<void>;
+  deleteProduct: (product: Product) => Promise<void>;
   productToUpdate: Product | null;
   setProductToUpdate: Dispatch<SetStateAction<Product | null>>;
   productFormModalOpened: boolean;
   setProductFormModalOpened: Dispatch<SetStateAction<boolean>>;
+  loading: boolean;
+  error: string;
 }
 
 const ProductsContext = createContext<ProductsContextProps>({
   products: [],
   setProducts: () => [],
-  addProduct: () => {},
-  updateProduct: () => {},
-  deleteProduct: () => {},
+  addProduct: async () => {},
+  updateProduct: async () => {},
+  deleteProduct: async () => {},
   productToUpdate: null,
   setProductToUpdate: () => null,
   productFormModalOpened: false,
   setProductFormModalOpened: () => null,
+  loading: false,
+  error: "",
 });
 
 export function useProductsContext() {
@@ -34,27 +46,54 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
   const [products, setProducts] = useState<Array<Product>>([]);
   const [productToUpdate, setProductToUpdate] = useState<Product | null>(null);
   const [productFormModalOpened, setProductFormModalOpened] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function addProduct(product: ProductToSendDB) {
     if (product) {
-      const response = await fetch(`${process.env.BASE_URL}/products`, {
-        method: "POST",
-        body: JSON.stringify(product),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const responseProduct = await response.json();
-
-      if (response.status === 201) {
-        setProducts((oldProducts) => [...oldProducts, responseProduct]);
+      if (error) {
+        setError("");
       }
+
+      setLoading(true);
+      try {
+        const response = await fetch(`${process.env.BASE_URL}/products`, {
+          method: "POST",
+          body: JSON.stringify(product),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const responseJSON = await response.json();
+
+        if (response.ok) {
+          setProducts((oldProducts) => [...oldProducts, responseJSON]);
+        } else {
+          setError(responseJSON.message);
+        }
+      } catch (error: any) {
+        console.error(error);
+      }
+      setLoading(false);
     }
   }
 
+  useEffect(() => {
+    console.log(loading);
+  }, [loading]);
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
+
   async function updateProduct(product: ProductToSendDB) {
     if (productToUpdate && product) {
+      if (error) {
+        setError("");
+      }
+
+      setLoading(true);
+
       const response = await fetch(`${process.env.BASE_URL}/products/${productToUpdate._id}`, {
         method: "PUT",
         body: JSON.stringify(product),
@@ -63,34 +102,47 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
         },
       });
 
-      const responseProduct = await response.json();
+      const responseJSON = await response.json();
 
-      if (response.status === 200) {
+      if (response.ok) {
         const newProducts = [...products];
         const productToUpdateIndex = newProducts.findIndex(
           (filteredProduct) => filteredProduct._id === productToUpdate._id
         );
-        newProducts[productToUpdateIndex] = responseProduct;
+        newProducts[productToUpdateIndex] = responseJSON;
 
         setProducts(newProducts);
-        console.log("Produto atualizado com sucesso!"); // TODO: Implement the rendered message
+      } else {
+        setError(responseJSON.message);
       }
+
+      setLoading(false);
     }
   }
 
   async function deleteProduct(product: Product) {
     if (product) {
+      if (error) {
+        setError("");
+      }
+
+      setLoading(true);
       const response = await fetch(`${process.env.BASE_URL}/products/${product._id}`, {
         method: "DELETE",
       });
+
+      const responseJSON = await response.json();
 
       if (response.status === 204) {
         setProducts((oldProducts) =>
           oldProducts.filter((filteredProduct) => filteredProduct._id !== product._id)
         );
-        console.log("Produto deletado com sucesso!"); // TODO: Implement the rendered message
+      } else {
+        setError(responseJSON.message);
       }
     }
+
+    setLoading(false);
   }
 
   return (
@@ -105,6 +157,8 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
         setProductToUpdate,
         productFormModalOpened,
         setProductFormModalOpened,
+        loading,
+        error,
       }}>
       {children}
     </ProductsContext.Provider>
