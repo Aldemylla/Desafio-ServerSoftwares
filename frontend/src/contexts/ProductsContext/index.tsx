@@ -1,19 +1,25 @@
 import { createContext, useContext, useState, Dispatch, SetStateAction, ReactNode } from "react";
 
-import { Product } from "@/types/Product";
+import { Product, ProductToSendDB } from "@/types/Product";
 
 interface ProductsContextProps {
   products: Array<Product> | [];
   setProducts: Dispatch<SetStateAction<Array<Product>>>;
-  addProduct: (product: Product) => void;
+  addProduct: (product: ProductToSendDB) => void;
+  updateProduct: (product: ProductToSendDB) => void;
   deleteProduct: (product: Product) => void;
+  productToUpdate: Product | null;
+  setProductToUpdate: Dispatch<SetStateAction<Product | null>>;
 }
 
 const ProductsContext = createContext<ProductsContextProps>({
   products: [],
   setProducts: () => [],
-  addProduct: () => [],
-  deleteProduct: () => [],
+  addProduct: () => {},
+  updateProduct: () => {},
+  deleteProduct: () => {},
+  productToUpdate: null,
+  setProductToUpdate: () => null,
 });
 
 export function useProductsContext() {
@@ -22,23 +28,78 @@ export function useProductsContext() {
 
 export const ProductsContextProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Array<Product>>([]);
+  const [productToUpdate, setProductToUpdate] = useState<Product | null>(null);
 
-  function addProduct(product: Product) {
+  async function addProduct(product: ProductToSendDB) {
     if (product) {
-      setProducts((oldProducts) => [...oldProducts, product]);
+      const response = await fetch(`${process.env.BASE_URL}/products`, {
+        method: "POST",
+        body: JSON.stringify(product),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const responseProduct = await response.json();
+
+      if (response.status === 201) {
+        setProducts((oldProducts) => [...oldProducts, responseProduct]);
+      }
     }
   }
 
-  function deleteProduct(product: Product) {
+  async function updateProduct(product: ProductToSendDB) {
+    if (productToUpdate && product) {
+      const response = await fetch(`${process.env.BASE_URL}/products/${productToUpdate._id}`, {
+        method: "PUT",
+        body: JSON.stringify(product),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const responseProduct = await response.json();
+
+      if (response.status === 200) {
+        const newProducts = [...products];
+        const productToUpdateIndex = newProducts.findIndex(
+          (filteredProduct) => filteredProduct._id === productToUpdate._id
+        );
+        newProducts[productToUpdateIndex] = responseProduct;
+
+        setProducts(newProducts);
+        setProductToUpdate(null);
+        console.log("Produto atualizado com sucesso!"); // TODO: Implement the rendered message
+      }
+    }
+  }
+
+  async function deleteProduct(product: Product) {
     if (product) {
-      setProducts((oldProducts) =>
-        oldProducts.filter((filteredProduct) => filteredProduct._id !== product._id)
-      );
+      const response = await fetch(`${process.env.BASE_URL}/products/${product._id}`, {
+        method: "DELETE",
+      });
+
+      if (response.status === 204) {
+        setProducts((oldProducts) =>
+          oldProducts.filter((filteredProduct) => filteredProduct._id !== product._id)
+        );
+        console.log("Produto deletado com sucesso!"); // TODO: Implement the rendered message
+      }
     }
   }
 
   return (
-    <ProductsContext.Provider value={{ products, setProducts, addProduct, deleteProduct }}>
+    <ProductsContext.Provider
+      value={{
+        products,
+        setProducts,
+        addProduct,
+        updateProduct,
+        deleteProduct,
+        productToUpdate,
+        setProductToUpdate,
+      }}>
       {children}
     </ProductsContext.Provider>
   );

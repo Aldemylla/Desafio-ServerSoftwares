@@ -5,3 +5,5 @@ export interface Product {
   preco: number;
   data_cadastro?: Date;
 }
+
+export type ProductToSendDB = Omit<Product, "_id">;

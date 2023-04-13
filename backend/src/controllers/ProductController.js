@@ -21,7 +21,7 @@ module.exports = {
 
     try {
       await product.save();
-      return response.status(201).json({ product });
+      return response.status(201).json(product);
     } catch (error) {
       response.status(400).json({ message: "Erro ao criar o produto." });
     }

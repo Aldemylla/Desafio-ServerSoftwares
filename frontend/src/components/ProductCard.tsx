@@ -1,6 +1,6 @@
 import { useProductsContext } from "@/contexts/ProductsContext";
 import { Product } from "@/types/Product";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, MouseEvent } from "react";
 
 interface ProductCardProps {
   product: Product;
@@ -9,18 +9,18 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onClick, detailed }: ProductCardProps) {
-  const { _id, codigo, descricao, preco, data_cadastro } = product;
-  const { deleteProduct } = useProductsContext();
+  const { codigo, descricao, preco, data_cadastro } = product;
+  const { setProductToUpdate, deleteProduct } = useProductsContext();
 
-  async function handleDeleteProduct() {
-    const response = await fetch(`${process.env.BASE_URL}/products/${_id}`, {
-      method: "DELETE",
-    });
+  function handleEditProduct(event: MouseEvent<HTMLElement>) {
+    event.stopPropagation();
 
-    if (response.status === 204) {
-      deleteProduct(product);
-      console.log("Produto deletado com sucesso!");
-    }
+    setProductToUpdate(product);
+  }
+
+  async function handleDeleteProduct(event: MouseEvent<HTMLElement>) {
+    event.stopPropagation();
+    deleteProduct(product);
   }
 
   return (
@@ -34,7 +34,7 @@ export function ProductCard({ product, onClick, detailed }: ProductCardProps) {
         </>
       )}
       <div role='group' aria-label='Ações'>
-        <button type='button' onClick={() => console.log("editar")}>
+        <button type='button' onClick={handleEditProduct}>
           Editar
         </button>
         <button type='button' onClick={handleDeleteProduct}>

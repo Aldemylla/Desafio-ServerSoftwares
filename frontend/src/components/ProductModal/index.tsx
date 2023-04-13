@@ -3,46 +3,46 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductFormProps, productFormSchema } from "./productFormSchema";
 import { Input } from "./Input";
 import { useProductsContext } from "@/contexts/ProductsContext";
+import { Product } from "@/types/Product";
+import { useEffect } from "react";
 
 interface ProductModalProps {
   open: boolean;
+  product?: Product;
 }
 
 export function ProductModal({ open }: ProductModalProps) {
-  const { addProduct } = useProductsContext();
+  const { addProduct, updateProduct, productToUpdate } = useProductsContext();
+  const productAction = !!productToUpdate ? "Editar" : "Cadastrar";
   const {
     control,
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ProductFormProps>({
     mode: "all",
     resolver: zodResolver(productFormSchema),
-    defaultValues: {
-      codigo: "",
-      descricao: "",
-      preco: 0,
-    },
   });
 
-  const handleForm = async (data: ProductFormProps) => {
-    const response = await fetch(`${process.env.BASE_URL}/products`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  useEffect(() => {
+    if (productToUpdate) {
+      reset(productToUpdate);
+    }
+  }, [productToUpdate]);
 
-    if (response.status === 201) {
-      addProduct(data);
+  const handleForm = async (product: ProductFormProps) => {
+    if (productAction === "Cadastrar") {
+      addProduct(product);
+    } else if (productAction === "Editar") {
+      updateProduct(product);
     }
   };
 
-  return open ? (
+  return open || !!productToUpdate ? (
     <div role='dialog' aria-labelledby='modal-title' aria-modal='true'>
       <header>
-        <h2 id='modal-title'>Cadastrar produto</h2>
+        <h2 id='modal-title'>{productAction} produto</h2>
         <button>X</button>
       </header>
 
@@ -55,8 +55,9 @@ export function ProductModal({ open }: ProductModalProps) {
           register={register}
           control={control}
         />
+        {productToUpdate && <p>Data de cadastro: {String(productToUpdate.data_cadastro)}</p>}
 
-        <button type='submit'>Cadastrar</button>
+        <button type='submit'>{productAction}</button>
       </form>
     </div>
   ) : null;
