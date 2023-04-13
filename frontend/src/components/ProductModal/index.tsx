@@ -6,6 +6,7 @@ import { Button } from "../Button";
 import { ProductFormProps, productFormSchema } from "./productFormSchema";
 import { Input } from "./Input";
 import { useProductsContext } from "@/contexts/ProductsContext";
+import { useFormatDate } from "@/hooks/useFormatDate";
 
 import styles from "@/styles/ProductModal.module.scss";
 import Image from "next/image";
@@ -21,6 +22,8 @@ export function ProductModal() {
     loading,
   } = useProductsContext();
   const productAction = !!productToUpdate ? "Editar" : "Cadastrar";
+  const formattedDate =
+    productToUpdate && useFormatDate(productToUpdate.data_cadastro || new Date());
   const {
     control,
     register,
@@ -98,7 +101,7 @@ export function ProductModal() {
             register={register}
             control={control}
           />
-          {productToUpdate && <p>Data de cadastro: {String(productToUpdate.data_cadastro)}</p>}
+          {productToUpdate && <p>Data de cadastro: {formattedDate}</p>}
           <Button type='submit'>{productAction}</Button>
         </form>
       </div>

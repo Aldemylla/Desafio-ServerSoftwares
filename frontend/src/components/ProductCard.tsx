@@ -2,6 +2,7 @@ import { MouseEventHandler, MouseEvent } from "react";
 import Image from "next/image";
 
 import { useProductsContext } from "@/contexts/ProductsContext";
+import { useFormatDate } from "@/hooks/useFormatDate";
 import styles from "@/styles/ProductCard.module.scss";
 
 import { Product } from "@/types/Product";
@@ -28,6 +29,7 @@ function ProductInfo({ title, info }: ProductInfoProps) {
 export function ProductCard({ product, onClick, detailed }: ProductCardProps) {
   const { codigo, descricao, preco, data_cadastro } = product;
   const { setProductToUpdate, setProductFormModalOpened, deleteProduct } = useProductsContext();
+  const formattedDate = useFormatDate(data_cadastro || new Date());
 
   function handleEditProduct(event: MouseEvent<HTMLElement>) {
     event.stopPropagation();
@@ -48,7 +50,7 @@ export function ProductCard({ product, onClick, detailed }: ProductCardProps) {
         {detailed && (
           <>
             <ProductInfo title={"Preço"} info={`${preco}`} />
-            <ProductInfo title={"Data do cadastro"} info={`${data_cadastro}`} />
+            <ProductInfo title={"Data do cadastro"} info={formattedDate} />
           </>
         )}
       </div>
