@@ -13,7 +13,12 @@ interface HomeProps {
 }
 
 export default function Home({ data }: HomeProps) {
-  const { products: contextProducts, setProducts } = useProductsContext();
+  const {
+    products: contextProducts,
+    setProducts,
+    setProductToUpdate,
+    setProductFormModalOpened,
+  } = useProductsContext();
   const products: Array<Product> | [] = contextProducts || data.products;
 
   useEffect(() => {
@@ -22,11 +27,11 @@ export default function Home({ data }: HomeProps) {
     }
   }, []);
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [detailedProduct, setDetailedProduct] = useState("");
 
-  function handleModal() {
-    setModalOpen((prev) => !prev);
+  function openProductFormModal() {
+    setProductToUpdate(null);
+    setProductFormModalOpened(true);
   }
 
   function handleProductDetail(id: string) {
@@ -63,9 +68,9 @@ export default function Home({ data }: HomeProps) {
         ) : (
           <p>:( Ainda não existem produtos cadastrados.</p>
         )}
-        <button onClick={handleModal}>Cadastrar novo produto</button>
+        <button onClick={openProductFormModal}>Cadastrar novo produto</button>
       </main>
-      <ProductModal open={modalOpen} />
+      <ProductModal />
     </>
   );
 }

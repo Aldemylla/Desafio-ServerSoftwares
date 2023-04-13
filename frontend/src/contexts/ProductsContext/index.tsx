@@ -10,6 +10,8 @@ interface ProductsContextProps {
   deleteProduct: (product: Product) => void;
   productToUpdate: Product | null;
   setProductToUpdate: Dispatch<SetStateAction<Product | null>>;
+  productFormModalOpened: boolean;
+  setProductFormModalOpened: Dispatch<SetStateAction<boolean>>;
 }
 
 const ProductsContext = createContext<ProductsContextProps>({
@@ -20,6 +22,8 @@ const ProductsContext = createContext<ProductsContextProps>({
   deleteProduct: () => {},
   productToUpdate: null,
   setProductToUpdate: () => null,
+  productFormModalOpened: false,
+  setProductFormModalOpened: () => null,
 });
 
 export function useProductsContext() {
@@ -29,6 +33,7 @@ export function useProductsContext() {
 export const ProductsContextProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Array<Product>>([]);
   const [productToUpdate, setProductToUpdate] = useState<Product | null>(null);
+  const [productFormModalOpened, setProductFormModalOpened] = useState(false);
 
   async function addProduct(product: ProductToSendDB) {
     if (product) {
@@ -99,6 +104,8 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
         deleteProduct,
         productToUpdate,
         setProductToUpdate,
+        productFormModalOpened,
+        setProductFormModalOpened,
       }}>
       {children}
     </ProductsContext.Provider>

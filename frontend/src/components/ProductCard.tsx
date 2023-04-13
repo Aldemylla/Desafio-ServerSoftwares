@@ -10,12 +10,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick, detailed }: ProductCardProps) {
   const { codigo, descricao, preco, data_cadastro } = product;
-  const { setProductToUpdate, deleteProduct } = useProductsContext();
+  const { setProductToUpdate, setProductFormModalOpened, deleteProduct } = useProductsContext();
 
   function handleEditProduct(event: MouseEvent<HTMLElement>) {
     event.stopPropagation();
-
     setProductToUpdate(product);
+    setProductFormModalOpened(true);
   }
 
   async function handleDeleteProduct(event: MouseEvent<HTMLElement>) {

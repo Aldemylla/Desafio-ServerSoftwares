@@ -1,18 +1,19 @@
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { ProductFormProps, productFormSchema } from "./productFormSchema";
 import { Input } from "./Input";
 import { useProductsContext } from "@/contexts/ProductsContext";
-import { Product } from "@/types/Product";
-import { useEffect } from "react";
 
-interface ProductModalProps {
-  open: boolean;
-  product?: Product;
-}
-
-export function ProductModal({ open }: ProductModalProps) {
-  const { addProduct, updateProduct, productToUpdate } = useProductsContext();
+export function ProductModal() {
+  const {
+    addProduct,
+    updateProduct,
+    productToUpdate,
+    productFormModalOpened,
+    setProductFormModalOpened,
+  } = useProductsContext();
   const productAction = !!productToUpdate ? "Editar" : "Cadastrar";
   const {
     control,
@@ -28,6 +29,12 @@ export function ProductModal({ open }: ProductModalProps) {
   useEffect(() => {
     if (productToUpdate) {
       reset(productToUpdate);
+    } else {
+      reset({
+        codigo: "",
+        descricao: "",
+        preco: 0,
+      });
     }
   }, [productToUpdate]);
 
@@ -39,11 +46,15 @@ export function ProductModal({ open }: ProductModalProps) {
     }
   };
 
-  return open || !!productToUpdate ? (
+  function closeModal() {
+    setProductFormModalOpened(false);
+  }
+
+  return productFormModalOpened ? (
     <div role='dialog' aria-labelledby='modal-title' aria-modal='true'>
       <header>
         <h2 id='modal-title'>{productAction} produto</h2>
-        <button>X</button>
+        <button onClick={closeModal}>X</button>
       </header>
 
       <form onSubmit={handleSubmit(handleForm)}>
