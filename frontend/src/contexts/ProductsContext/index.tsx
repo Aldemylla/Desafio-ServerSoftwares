@@ -1,12 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  Dispatch,
-  SetStateAction,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, Dispatch, SetStateAction, ReactNode } from "react";
 
 import { Product, ProductToSendDB } from "@/types/Product";
 
@@ -46,6 +38,7 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
   const [products, setProducts] = useState<Array<Product>>([]);
   const [productToUpdate, setProductToUpdate] = useState<Product | null>(null);
   const [productFormModalOpened, setProductFormModalOpened] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -78,13 +71,6 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    console.log(loading);
-  }, [loading]);
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
 
   async function updateProduct(product: ProductToSendDB) {
     if (productToUpdate && product) {

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 import { ProductModal } from "@/components/ProductModal";
 import { ProductCard } from "@/components/ProductCard";
@@ -9,6 +10,7 @@ import { useProductsContext } from "@/contexts/ProductsContext";
 import { Product } from "@/types/Product";
 
 import styles from "@/styles/Home.module.scss";
+import "react-toastify/dist/ReactToastify.css";
 
 interface HomeProps {
   data: {
@@ -77,7 +79,9 @@ export default function Home({ data }: HomeProps) {
           )}
           <Button onClick={openProductFormModal}>Cadastrar novo produto</Button>
         </main>
+
         <ProductModal />
+        <ToastContainer newestOnTop />
       </div>
     </>
   );
