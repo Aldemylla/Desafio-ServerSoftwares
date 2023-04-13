@@ -25,7 +25,7 @@ export function CurrencyMaskedInput(props: any) {
         <MaskedInput
           mask={currencyMask}
           value={value}
-          onChange={(event) => onChange(+event.target.value.replace(/[^\d\.]/g, ""))}
+          onChange={(event) => onChange(+event.target.value.replace(/[^\d]/g, ""))}
           onBlur={onBlur}
           placeholder='R$ 0,00'
           {...props}
