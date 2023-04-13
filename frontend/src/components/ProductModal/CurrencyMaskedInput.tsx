@@ -2,7 +2,7 @@ import MaskedInput from "react-text-mask";
 import { Controller, Control } from "react-hook-form";
 import { createNumberMask } from "text-mask-addons";
 import { productFormSchema } from "./productFormSchema";
-import { InputHTMLAttributes } from "react";
+import { ChangeEventHandler, InputHTMLAttributes } from "react";
 
 interface CurrencyMaskedInputProps extends InputHTMLAttributes<HTMLInputElement> {
   control: Control<any>;
@@ -21,6 +21,32 @@ export function CurrencyMaskedInput({ control, ...props }: CurrencyMaskedInputPr
     allowleadingZero: false,
   });
 
+  function formatValue(value: string, onChange: (...event: any[]) => void) {
+    let formattedValue = value;
+    const comma = ",";
+    const splittedValue = formattedValue.split(comma);
+
+    if (formattedValue && splittedValue) {
+      const checkValueNotHaveUnit = splittedValue[0] === "R$ ";
+      const checkValueNotHaveDecimals = !splittedValue[1];
+      const checkValueHaveOneDecimal = splittedValue[1]?.length === 1;
+
+      if (checkValueNotHaveUnit) {
+        formattedValue = splittedValue[0] + "0" + comma + splittedValue[1];
+      }
+
+      if (checkValueNotHaveDecimals) {
+        formattedValue = formattedValue + comma + "00";
+      }
+
+      if (checkValueHaveOneDecimal) {
+        formattedValue = formattedValue + "0";
+      }
+    }
+
+    onChange(formattedValue);
+  }
+
   return (
     <Controller
       name='preco'
@@ -30,8 +56,11 @@ export function CurrencyMaskedInput({ control, ...props }: CurrencyMaskedInputPr
         <MaskedInput
           mask={currencyMask}
           value={value}
-          onChange={(event) => onChange(event.target.value)}
-          onBlur={onBlur}
+          onChange={onChange}
+          onBlur={(event) => {
+            formatValue(event.target.value, onChange);
+            return onBlur();
+          }}
           placeholder='R$ 0,00'
           {...props}
         />
