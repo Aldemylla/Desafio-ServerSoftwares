@@ -61,7 +61,7 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
 
       setLoading(true);
       try {
-        const response = await fetch(`${process.env.BASE_URL}/products`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`, {
           method: "POST",
           body: JSON.stringify(product),
           headers: {
@@ -90,13 +90,16 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
 
       setLoading(true);
 
-      const response = await fetch(`${process.env.BASE_URL}/products/${productToUpdate._id}`, {
-        method: "PUT",
-        body: JSON.stringify(product),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${productToUpdate._id}`,
+        {
+          method: "PUT",
+          body: JSON.stringify(product),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const responseJSON = await response.json();
 
@@ -122,7 +125,7 @@ export const ProductsContextProvider = ({ children }: { children: ReactNode }) =
       clearFetchStatus();
 
       setLoading(true);
-      const response = await fetch(`${process.env.BASE_URL}/products/${product._id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products/${product._id}`, {
         method: "DELETE",
       });
 
