@@ -77,7 +77,7 @@ export function ProductModal() {
           <h2 className={styles.title} id='modal-title'>
             {productAction} produto
           </h2>
-          <button className={styles.close} onClick={closeModal}>
+          <button data-testid='close-modal' className={styles.close} onClick={closeModal}>
             <Image src={"/icons/close.svg"} alt='fechar' width={25} height={25} />
           </button>
         </header>
