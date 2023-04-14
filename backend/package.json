@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/app.js",
+    "build": "tsup src/app.js",
     "dev": "nodemon --watch src src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +19,8 @@
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "tsup": "^6.7.0"
   }
 }
+
